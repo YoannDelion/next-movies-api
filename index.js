@@ -1,11 +1,14 @@
-const express = require('express')
+import express from 'express'
+import dotenv from 'dotenv'
+import moviesRoutes from './routes/movies.js'
 
+dotenv.config()
 const app = express()
-const port = 5000
+app.use(express.json())
 
-app.get('/', (req, res) => {
-  res.status(200).json('Hello World')
-})
+const port = process.env.PORT
+
+app.use('/movies', moviesRoutes)
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
