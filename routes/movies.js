@@ -7,7 +7,7 @@ router.get('/popular', async (req, res) => {
     const { data } = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_API_KEY}&language=fr`)
     res.status(200).json(data)
   } catch (error) {
-    res.status(500).json(error)
+    res.status(500).json(error.message)
   }
 })
 
