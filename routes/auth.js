@@ -1,5 +1,6 @@
 import express from 'express'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import User from '../models/user.js'
 import { validateRegisterData } from '../utils/validators.js'
 const router = express.Router()
@@ -30,6 +31,18 @@ router.post('/register', async (req, res) => {
       res.status(500).json(error)
     }
   }
+})
+
+router.post('/login', async (req, res) => {
+  const user = await User.findOne({ username: req.body.username })
+
+  const expiresIn = 15 * 60
+  const accessToken = {}
+  accessToken.token = jwt.sign({ username: user.username }, 'secretkey', { expiresIn })
+  accessToken.expiresIn = expiresIn
+  const { password, ...userData } = user._doc
+
+  res.status(200).json({ ...userData, accessToken })
 })
 
 export default router
