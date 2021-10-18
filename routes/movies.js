@@ -1,5 +1,8 @@
-import express from 'express'
 import axios from 'axios'
+import express from 'express'
+import Favorite from '../models/favorite.js'
+import { checkAuth } from '../utils/checkAuth.js'
+
 const router = express.Router()
 
 router.get('/popular', async (req, res) => {
@@ -17,6 +20,27 @@ router.get('/:id', async (req, res) => {
     res.status(200).json(data)
   } catch (error) {
     res.status(500).json(error.message)
+  }
+})
+
+router.post('/:id/toggleFavorite', checkAuth, async (req, res) => {
+  const userId = req.user.userId
+  const movieId = req.params.id
+
+  try {
+    const favorite = await Favorite.findOne({ userId, movieId })
+
+    if (favorite) {
+      await favorite.delete()
+      res.status(200).json(`Movie ${movieId} removed from user ${userId} favorites`)
+    } else {
+      const newFavorite = new Favorite({ userId, movieId })
+
+      await newFavorite.save()
+      res.status(201).json(newFavorite)
+    }
+  } catch (error) {
+    res.status(200).json(error.message)
   }
 })
 

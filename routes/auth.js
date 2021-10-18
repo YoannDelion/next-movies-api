@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
 
   const expiresIn = 15 * 60
   const accessToken = {}
-  accessToken.token = jwt.sign({ username: user.username }, 'secretkey', { expiresIn })
+  accessToken.token = jwt.sign({ username: user.username, userId: user._id }, 'secretkey', { expiresIn })
   accessToken.expiresIn = expiresIn
   const { password, ...userData } = user._doc
 
